@@ -19,10 +19,13 @@ public class TablaSimbolos {
 
 	public void cargarTabla(NodoBase raiz){
 		while (raiz != null) {
-	    if (raiz instanceof NodoIdentificador){
+	    if (raiz instanceof NodoIdentificador) {
 	    	InsertarSimbolo(((NodoIdentificador)raiz).getNombre(),-1);
-	    	//TODO: A�adir el numero de linea y localidad de memoria correcta
 	    }
+		if(raiz instanceof NodoAsignacion){
+			((NodoAsignacion)raiz).getIdentificador();
+			InsertarSimbolo(((NodoAsignacion)raiz).getIdentificador(),-1);
+		}
 
 	    /* Hago el recorrido recursivo */
 	    if (raiz instanceof  NodoIf){
@@ -45,9 +48,8 @@ public class TablaSimbolos {
 	    	cargarTabla(((NodoOperacion)raiz).getOpDerecho());
 	    }
 		else if (raiz instanceof NodoFor) {
-			System.out.println(((NodoFor)raiz).getAsignacion());
-			System.out.println("asdadasdasdasda");
 			cargarTabla(((NodoFor)raiz).getAsignacion());
+			cargarTabla(((NodoFor)raiz).getExpresion());
 			cargarTabla(((NodoFor)raiz).getCuerpo());
 		}
 	    raiz = raiz.getHermanoDerecha();

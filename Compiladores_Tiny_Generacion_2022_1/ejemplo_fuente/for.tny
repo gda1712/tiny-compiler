@@ -1,4 +1,8 @@
-varia := 5;
+read hola;
+write hola;
+hola := hola * 5;
+write hola;
 for fact := 0 to 10 do
-    write 1+2;
+    fact := fact + 2;
+    write fact;
 end

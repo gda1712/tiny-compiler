@@ -101,7 +101,7 @@ public class Generador {
 
         /* Cuerpo  */
         generar(n.getCuerpo());
-        /* Crear el incremento del for*/
+        /* Incrementar el for */
         NodoOperacion nodoOperacion = new NodoOperacion(new NodoIdentificador(variable), tipoOp.mas, new NodoValor(1));
         NodoAsignacion incremento = new NodoAsignacion(variable, nodoOperacion);
         generar(incremento);
