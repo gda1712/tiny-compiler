@@ -21,7 +21,7 @@ public class TablaSimbolos {
 		while (raiz != null) {
 	    if (raiz instanceof NodoIdentificador){
 	    	InsertarSimbolo(((NodoIdentificador)raiz).getNombre(),-1);
-	    	//TODO: Añadir el numero de linea y localidad de memoria correcta
+	    	//TODO: Aï¿½adir el numero de linea y localidad de memoria correcta
 	    }
 
 	    /* Hago el recorrido recursivo */
@@ -44,6 +44,12 @@ public class TablaSimbolos {
 	    	cargarTabla(((NodoOperacion)raiz).getOpIzquierdo());
 	    	cargarTabla(((NodoOperacion)raiz).getOpDerecho());
 	    }
+		else if (raiz instanceof NodoFor) {
+			System.out.println(((NodoFor)raiz).getAsignacion());
+			System.out.println("asdadasdasdasda");
+			cargarTabla(((NodoFor)raiz).getAsignacion());
+			cargarTabla(((NodoFor)raiz).getCuerpo());
+		}
 	    raiz = raiz.getHermanoDerecha();
 	  }
 	}
@@ -73,8 +79,12 @@ public class TablaSimbolos {
 		}
 	}
 
-	public int getDireccion(String Clave){
-		return BuscarSimbolo(Clave).getDireccionMemoria();
+	public int getDireccion(String Clave) {
+		RegistroSimbolo registro = BuscarSimbolo(Clave);
+		if (registro == null) {
+			throw new RuntimeException("Variable '" + Clave + "' no existe en la tabla de sÃ­mbolos.");
+		}
+		return registro.getDireccionMemoria();
 	}
 	
 	/*

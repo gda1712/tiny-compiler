@@ -122,6 +122,10 @@ public class UtGen {
 		if(instruccionMasAlta < instruccionActual) 
 			instruccionMasAlta = instruccionActual;	
 	}
-	
-/*TODO: Cambiar emision por pantalla por stream*/	
+
+	public static int getInstruccionActual() {
+		return instruccionActual;
+	}
+
+	/*TODO: Cambiar emision por pantalla por stream*/
 }
