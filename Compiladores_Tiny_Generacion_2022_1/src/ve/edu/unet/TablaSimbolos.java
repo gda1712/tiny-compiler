@@ -22,8 +22,10 @@ public class TablaSimbolos {
 	    if (raiz instanceof NodoIdentificador) {
 	    	InsertarSimbolo(((NodoIdentificador)raiz).getNombre(),-1);
 	    }
+
+		// Fue necesario agregar a la tabla de sinbolos el identiicados para los nodos de asignacion
+		// para tener la referencia del simbolo
 		if(raiz instanceof NodoAsignacion){
-			((NodoAsignacion)raiz).getIdentificador();
 			InsertarSimbolo(((NodoAsignacion)raiz).getIdentificador(),-1);
 		}
 
