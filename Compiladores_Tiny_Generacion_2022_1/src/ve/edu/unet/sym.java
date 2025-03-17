@@ -30,6 +30,7 @@ public class sym {
   public static final int UNTIL = 10;
   public static final int ASSIGN = 15;
   public static final int EQ = 16;
+  public static final int BOOL = 25;
   public static final int FOR = 2;
   public static final int TO = 3;
   public static final int REPEAT = 9;
@@ -58,7 +59,8 @@ public class sym {
   "OVER",
   "LPAREN",
   "RPAREN",
-  "SEMI"
+  "SEMI",
+  "BOOL"
   };
 }
 

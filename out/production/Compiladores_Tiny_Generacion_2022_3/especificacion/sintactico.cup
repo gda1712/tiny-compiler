@@ -72,6 +72,7 @@ terminal OVER;
 terminal LPAREN;
 terminal RPAREN;
 terminal SEMI;
+terminal String BOOL;
 
 /* Simbolos No Terminales */
 non terminal program;
@@ -239,6 +240,12 @@ factor      ::= LPAREN exp:ex RPAREN	{: if(debug) System.out.println("\t regla 1
 						System.out.println("Ocurrio error en cup # 0005");
 					}
 					:}
+		| BOOL:boolVal
+                  {: if(debug) System.out.println("\t regla literal booleano");
+                     // Se convierte el texto encontrado en la declaracion de la variable a Boolean
+                     // y se crea un nodo específico para booleanos
+                     RESULT = new NodoValorBoolean(Boolean.parseBoolean(boolVal));
+                  :}
 		| error	{: if(debug) System.out.println("\t regla 12d"); 
 				System.out.println("Ocurrio error en cup # 0003");
 				RESULT=null;

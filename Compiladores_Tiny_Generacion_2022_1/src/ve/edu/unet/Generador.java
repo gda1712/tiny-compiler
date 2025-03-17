@@ -70,6 +70,8 @@ public class Generador {
                 generarEscribir(nodo);
             } else if (nodo instanceof NodoValor) {
                 generarValor(nodo);
+            } else if (nodo instanceof NodoValorBoolean) {
+                generarValorBoolean(nodo);
             } else if (nodo instanceof NodoIdentificador) {
                 generarIdentificador(nodo);
             } else if (nodo instanceof NodoOperacion) {
@@ -192,6 +194,16 @@ public class Generador {
         UtGen.emitirRM("LDC", UtGen.AC, n.getValor(), 0, "cargar constante: " + n.getValor());
         if (UtGen.debug) UtGen.emitirComentario("<- constante");
     }
+
+    private static void generarValorBoolean(NodoBase nodo) {
+        NodoValorBoolean n = (NodoValorBoolean) nodo;
+        if (UtGen.debug) UtGen.emitirComentario("-> constante booleana");
+        // En este caso convertimos el bool a int para manejar: 1 para true, 0 para false
+        int valor = n.getValor() ? 1 : 0;
+        UtGen.emitirRM("LDC", UtGen.AC, valor, 0, "cargar constante booleana: " + n.getValor());
+        if (UtGen.debug) UtGen.emitirComentario("<- constante booleana");
+    }
+
 
     private static void generarIdentificador(NodoBase nodo) {
         NodoIdentificador n = (NodoIdentificador) nodo;
