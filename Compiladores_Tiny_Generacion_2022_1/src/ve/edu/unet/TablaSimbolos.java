@@ -19,10 +19,15 @@ public class TablaSimbolos {
 
 	public void cargarTabla(NodoBase raiz){
 		while (raiz != null) {
-	    if (raiz instanceof NodoIdentificador){
+	    if (raiz instanceof NodoIdentificador) {
 	    	InsertarSimbolo(((NodoIdentificador)raiz).getNombre(),-1);
-	    	//TODO: AÒadir el numero de linea y localidad de memoria correcta
 	    }
+
+		// Fue necesario agregar a la tabla de sinbolos el identiicados para los nodos de asignacion
+		// para tener la referencia del simbolo
+		if(raiz instanceof NodoAsignacion){
+			InsertarSimbolo(((NodoAsignacion)raiz).getIdentificador(),-1);
+		}
 
 	    /* Hago el recorrido recursivo */
 	    if (raiz instanceof  NodoIf){
@@ -44,6 +49,11 @@ public class TablaSimbolos {
 	    	cargarTabla(((NodoOperacion)raiz).getOpIzquierdo());
 	    	cargarTabla(((NodoOperacion)raiz).getOpDerecho());
 	    }
+		else if (raiz instanceof NodoFor) {
+			cargarTabla(((NodoFor)raiz).getAsignacion());
+			cargarTabla(((NodoFor)raiz).getExpresion());
+			cargarTabla(((NodoFor)raiz).getCuerpo());
+		}
 	    raiz = raiz.getHermanoDerecha();
 	  }
 	}
@@ -73,8 +83,12 @@ public class TablaSimbolos {
 		}
 	}
 
-	public int getDireccion(String Clave){
-		return BuscarSimbolo(Clave).getDireccionMemoria();
+	public int getDireccion(String Clave) {
+		RegistroSimbolo registro = BuscarSimbolo(Clave);
+		if (registro == null) {
+			throw new RuntimeException("Variable '" + Clave + "' no existe en la tabla de s√≠mbolos.");
+		}
+		return registro.getDireccionMemoria();
 	}
 	
 	/*

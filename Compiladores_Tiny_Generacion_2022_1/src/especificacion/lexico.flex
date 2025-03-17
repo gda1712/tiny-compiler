@@ -26,11 +26,11 @@ import java.io.Reader;
 /******************************************************************
 BORRAR SI NO SE NECESITA
 	//TODO: Cambiar la SF por esto o ver que se hace
-	//Crear un nuevo objeto java_cup.runtime.Symbol con información sobre el token actual sin valor
+	//Crear un nuevo objeto java_cup.runtime.Symbol con informaciï¿½n sobre el token actual sin valor
  	  private Symbol symbol(int type){
     		return new Symbol(type,yyline,yycolumn);
 	  }
-	//Crear un nuevo objeto java_cup.runtime.Symbol con información sobre el token actual con valor
+	//Crear un nuevo objeto java_cup.runtime.Symbol con informaciï¿½n sobre el token actual con valor
 	  private Symbol symbol(int type,Object value){
     		return new Symbol(type,yyline,yycolumn,value);
 	  }
@@ -65,6 +65,15 @@ espacio		= [ \t]+
 "end"           {	if(debug) System.out.println("token END");
 			return sf.newSymbol("END",sym.END);
 			}
+"for"       {  if(debug) System.out.println("token FOR");
+            return sf.newSymbol("FOR", sym.FOR);
+            }
+"to"        {   if(debug) System.out.println("token TO");
+            return sf.newSymbol("TO", sym.TO);
+            }
+"do"        {   if(debug) System.out.println("token DO");
+            return sf.newSymbol("DO", sym.DO);
+            }
 "repeat"        {	if(debug) System.out.println("token REPEAT");
 			return sf.newSymbol("REPEAT",sym.REPEAT);
 			}
