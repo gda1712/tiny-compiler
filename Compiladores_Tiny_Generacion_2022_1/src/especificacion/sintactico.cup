@@ -8,8 +8,8 @@ import java.io.InputStreamReader;
 parser code {:
 
 /***********
-SymbolFactory es una nueva caracteristica que ha sido añadida a las version 11a de cup, la cual facilita la implementacion de clases Symbol personalizadas
-, esto debido a que dicha clase no provee mucha información de contexto que podria ser util para el analisis semantico o ayudar en la construccion del AST
+SymbolFactory es una nueva caracteristica que ha sido aï¿½adida a las version 11a de cup, la cual facilita la implementacion de clases Symbol personalizadas
+, esto debido a que dicha clase no provee mucha informaciï¿½n de contexto que podria ser util para el analisis semantico o ayudar en la construccion del AST
 Mas informacion en: http//4thmouse.com/index.php/2007/02/15/using-custom-symbols-in-cup/
 ***********/
 	public static void main(String args[]) throws Exception {
@@ -49,6 +49,9 @@ action code {:
 
 /* Simbolos Terminales */
 
+terminal FOR;
+terminal TO;
+terminal DO;
 terminal IF;
 terminal THEN;
 terminal ELSE;
@@ -72,6 +75,7 @@ terminal SEMI;
 
 /* Simbolos No Terminales */
 non terminal program;
+non terminal NodoBase for_stmt;
 non terminal NodoBase stmt_seq;
 non terminal NodoBase stmt;
 non terminal NodoBase if_stmt;
@@ -132,6 +136,9 @@ stmt        ::= if_stmt:sif	{: if(debug) System.out.println("\t regla 3a");
 				System.out.println("Ocurrio error en cup # 0004");
 				RESULT=null;
 				:}
+            | for_stmt:sfor      {: if(debug) System.out.println("\t regla 4f");
+                        RESULT=sfor;
+                        :}
             ;
 
 if_stmt     ::= IF exp:ex THEN stmt_seq:pthen END	{: if(debug) System.out.println("\t regla 4a"); 
@@ -142,16 +149,17 @@ if_stmt     ::= IF exp:ex THEN stmt_seq:pthen END	{: if(debug) System.out.printl
 		:}
 		;
 
+for_stmt ::= FOR assign_stmt:asi TO exp:fin DO stmt_seq:body END {: if(debug) System.out.println("\t regla 4f");
+        RESULT = new NodoFor(asi,fin,body);
+    :}
+    ;
+
 repeat_stmt ::= REPEAT stmt_seq:cuerpo UNTIL exp:prueba	{: if(debug) System.out.println("\t regla 5"); 
 							RESULT = new NodoRepeat(cuerpo,prueba);
 							:}
 		;
 
-assign_stmt ::= ID:variable 	{: if(debug) System.out.println("\t regla 6 parte del medio"); 
-				/*lineanum=1000; //Pasar/Obtener la linea correcta por el Simbolo
-				String nombre = variable.getName();*/
-				:}
-			ASSIGN exp:ex	{: if(debug) System.out.println("\t regla 6 parte final");
+assign_stmt ::= ID:variable ASSIGN exp:ex	{: if(debug) System.out.println("\t regla 6 parte final");
 					if(variable!=null)
 					RESULT = new NodoAsignacion(variable.toString(),ex);
 					else{
