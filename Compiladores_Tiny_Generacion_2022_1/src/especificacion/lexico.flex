@@ -95,6 +95,18 @@ bool        = true|false
 "<"             {	if(debug) System.out.println("token LT");
 			return sf.newSymbol("LT",sym.LT);
 			}
+">"             {	if(debug) System.out.println("token GT");
+   			return sf.newSymbol("GT",sym.GT);
+   			}
+"<="             {	if(debug) System.out.println("token LTE");
+			return sf.newSymbol("LTE",sym.LTE);
+			}
+">="             {	if(debug) System.out.println("token GTE");
+   			return sf.newSymbol("GTE",sym.GTE);
+   			}
+"<>"             {	if(debug) System.out.println("token NEQ");
+   			return sf.newSymbol("NEQ",sym.NEQ);
+   			}
 "+"             {	if(debug) System.out.println("token PLUS");
 			return sf.newSymbol("PLUS",sym.PLUS);
 			}

@@ -1,0 +1,34 @@
+read variable;
+resultado = 0;
+
+if variable < 10 then
+    write 1;
+    resultado := 1;
+end;
+
+if variable > 10 then
+    write 2;
+    resultado := 2;
+end;
+
+if variable = 10 then
+    write 3;
+    resultado := 3;
+end;
+
+if variable <> 10 then
+    write 4;
+    resultado := 4;
+end;
+
+if variable <= 10 then
+    write 5;
+    resultado := 5;
+end;
+
+if variable >= 10 then
+    write 6;
+    resultado := 6;
+end;
+
+write resultado;
