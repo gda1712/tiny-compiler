@@ -103,6 +103,8 @@ static void imprimirNodo( NodoBase raiz )
 			System.out.println("*");
 		if(sel==tipoOp.entre)
 			System.out.println("/");
+		if(sel==tipoOp.modulo)
+			System.out.println("%");
 	}
 
 	if(	raiz instanceof NodoValor ){

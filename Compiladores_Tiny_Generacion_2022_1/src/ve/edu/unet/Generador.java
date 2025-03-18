@@ -248,6 +248,34 @@ public class Generador {
             case entre:
                 UtGen.emitirRO("DIV", UtGen.AC, UtGen.AC1, UtGen.AC, "op: /");
                 break;
+            case modulo:
+                UtGen.debug = true;
+                // Mensaje de inicio
+                UtGen.emitirComentario("Inicio de la operación de módulo");
+
+                // 1. Almacenar el valor original de a en la pila temporal
+                UtGen.emitirRM("ST", UtGen.AC, desplazamientoTmp--, UtGen.MP, "Almacenar valor original de a en la pila temporal");
+                UtGen.emitirComentario("Valor original de a almacenado en la pila temporal: " + UtGen.AC);
+
+                // 2. Dividir a / b para obtener el cociente
+                UtGen.emitirRO("DIV", UtGen.AC, UtGen.AC1, UtGen.AC, "División para obtener el cociente");
+                UtGen.emitirComentario("Cociente (a / b) en AC: " + UtGen.AC);
+
+                // 3. Multiplicar el cociente por b
+                UtGen.emitirRO("MUL", UtGen.AC, UtGen.AC1, UtGen.AC, "Multiplicar cociente por divisor");
+                UtGen.emitirComentario("Resultado de (a / b) * b en AC: " + UtGen.AC);
+
+                // 4. Recuperar el valor original de a desde la pila temporal
+                UtGen.emitirRM("LD", UtGen.AC1, ++desplazamientoTmp, UtGen.MP, "Recuperar valor original de a desde la pila temporal");
+                UtGen.emitirComentario("Valor original de a recuperado en AC1: " + UtGen.AC1);
+
+                // 5. Restar para obtener el residuo
+                UtGen.emitirRO("SUB", UtGen.AC1, UtGen.AC, UtGen.AC, "Restar para obtener el residuo");
+                UtGen.emitirComentario("Residuo (a % b) en AC: " + UtGen.AC);
+
+                // Mensaje de fin
+                UtGen.emitirComentario("Fin de la operación de módulo");
+                break;
             case menor:
                 UtGen.emitirRO("SUB", UtGen.AC, UtGen.AC1, UtGen.AC, "op: <");
                 UtGen.emitirRM("JLT", UtGen.AC, 2, UtGen.PC, "voy dos instrucciones mas alla if verdadero (AC<0)");
