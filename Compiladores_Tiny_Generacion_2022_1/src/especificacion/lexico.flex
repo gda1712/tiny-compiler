@@ -45,13 +45,13 @@ BORRAR SI NO SE NECESITA
 %column
 
 
-
 digito		= [0-9]
 numero		= {digito}+
 letra			= [a-zA-Z]
 identificador	= {letra}+
 nuevalinea		= \n | \n\r | \r\n
 espacio		= [ \t]+
+bool        = true|false
 %%
 "if"            {	if(debug) System.out.println("token IF");
 			return sf.newSymbol("IF",sym.IF);
@@ -131,6 +131,10 @@ espacio		= [ \t]+
 {numero}        {	if(debug) System.out.println("token NUM");
 			return sf.newSymbol("NUM",sym.NUM,new String(yytext()));
 			}
+{bool}      {
+                if(debug) System.out.println("token BOOL");
+                return sf.newSymbol("BOOL", sym.BOOL, new String(yytext()));
+            }
 {identificador}	{	if(debug) System.out.println("token ID");
 				return sf.newSymbol("ID",sym.ID,new String(yytext()));
 			}

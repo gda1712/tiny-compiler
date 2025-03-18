@@ -1,0 +1,7 @@
+variable := 2;
+variableBooleana := true;
+write variableBooleana;
+
+if variableBooleana THEN
+ write 77;
+END;
