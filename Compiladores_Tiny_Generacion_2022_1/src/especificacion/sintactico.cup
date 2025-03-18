@@ -240,6 +240,7 @@ factor      ::= LPAREN exp:ex RPAREN	{: if(debug) System.out.println("\t regla 1
 							RESULT = ex;
 							:}
 		| NUM:valor	{: if(debug) System.out.println("\t regla 12b"); 
+
 					System.out.println("Devolvi nodo numero entero");
 					if(valor!=null){
 						RESULT= new NodoValor(Integer.parseInt(valor));
@@ -268,3 +269,4 @@ factor      ::= LPAREN exp:ex RPAREN	{: if(debug) System.out.println("\t regla 1
 				RESULT=null;
 				:}
 		;
+
