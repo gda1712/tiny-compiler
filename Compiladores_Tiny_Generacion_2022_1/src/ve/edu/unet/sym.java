@@ -34,6 +34,7 @@ public class sym {
   public static final int ASSIGN = 15;
   public static final int EQ = 16;
   public static final int BOOL = 29;
+  public static final int COMENTARIO = 30;
   public static final int FOR = 2;
   public static final int NEQ = 21;
   public static final int TO = 3;
@@ -68,7 +69,8 @@ public class sym {
   "LPAREN",
   "RPAREN",
   "SEMI",
-  "BOOL"
+  "BOOL",
+  "COMENTARIO"
   };
 }
 

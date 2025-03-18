@@ -140,5 +140,8 @@ bool        = true|false
 			}
 {nuevalinea}       {lineanum++;}
 {espacio}    { /* saltos espacios en blanco*/}
-"{"[^}]+"}"  { /* salto comentarios */ if(debug) System.out.println("token COMENTARIO"); }
+"{"([^}]|(\}[^}]))*"}" {
+    if(debug) System.out.println("token COMENTARIO");
+    return sf.newSymbol("COMENTARIO", sym.COMENTARIO, new String(yytext()));
+}
 .               {System.err.println("Caracter Ilegal encontrado en analisis lexico: " + yytext() + "\n");}

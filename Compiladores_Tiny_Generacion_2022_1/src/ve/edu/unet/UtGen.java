@@ -35,7 +35,10 @@ public class UtGen {
 	
 	
 	public static void emitirComentario(String c){
-		if(debug) System.out.println("*      "+c);
+		String[] lines = c.split("\n");
+		for (String line : lines) {
+			if(debug) System.out.println("*      "+line);
+		}
 	}
 
 	/* Este procedimiento emite sentencias RO (Solo Registro)
