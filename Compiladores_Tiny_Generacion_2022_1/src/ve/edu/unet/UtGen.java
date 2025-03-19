@@ -10,7 +10,7 @@ package ve.edu.unet;
 public class UtGen {
 	private static int instruccionActual=0;	//Direccion (num linea) actual de emision de la instruccion
 	private static int instruccionMasAlta=0;	//Almacena la direccion de la instruccion que ha resultado ser la mayor hasta ahora 
-	public static boolean debug=false;
+	public static boolean debug=true;
 
 	/* PC = program counter, registro[7] donde se almacena la direccion (linea)
 	 *  actual de ejecucion del codigo objeto 
@@ -35,8 +35,10 @@ public class UtGen {
 	
 	
 	public static void emitirComentario(String c){
-		if(debug) System.out.println("*      "+c);
-
+		String[] lines = c.split("\n");
+		for (String line : lines) {
+			if(debug) System.out.println("*      "+line);
+		}
 	}
 
 	/* Este procedimiento emite sentencias RO (Solo Registro)
