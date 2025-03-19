@@ -229,24 +229,94 @@ public class Generador {
         if (UtGen.debug) UtGen.emitirComentario("-> Operacion: " + n.getOperacion());
         /* Genero la expresion izquierda de la operacion */
         generar(n.getOpIzquierdo());
-        /* Almaceno en la pseudo pila de valor temporales el valor de la operacion izquierda */
-        UtGen.emitirRM("ST", UtGen.AC, desplazamientoTmp--, UtGen.MP, "op: push en la pila tmp el resultado expresion izquierda");
-        /* Genero la expresion derecha de la operacion */
-        generar(n.getOpDerecho());
-        /* Ahora cargo/saco de la pila el valor izquierdo */
-        UtGen.emitirRM("LD", UtGen.AC1, ++desplazamientoTmp, UtGen.MP, "op: pop o cargo de la pila el valor izquierdo en AC1");
+
+        if(n.getOpDerecho() != null) {
+            /* Almaceno en la pseudo pila de valor temporales el valor de la operacion izquierda */
+            UtGen.emitirRM("ST", UtGen.AC, desplazamientoTmp--, UtGen.MP, "op: push en la pila tmp el resultado expresion izquierda");
+            /* Genero la expresion derecha de la operacion */
+            generar(n.getOpDerecho());
+            /* Ahora cargo/saco de la pila el valor izquierdo */
+            UtGen.emitirRM("LD", UtGen.AC1, ++desplazamientoTmp, UtGen.MP, "op: pop o cargo de la pila el valor izquierdo en AC1");
+        } else {
+            /* Si no hay operador derecho, es operacion not*/
+
+            UtGen.emitirRM("JNE", UtGen.AC, 2, UtGen.PC, "");
+            UtGen.emitirRM("LDC", UtGen.AC, 1, UtGen.AC, "");
+            UtGen.emitirRM("LDA", UtGen.PC, 1, UtGen.PC, "");
+
+            UtGen.emitirRO("SUB", UtGen.AC, UtGen.AC, UtGen.AC, "");
+
+        }
+
         switch (n.getOperacion()) {
             case mas:
                 UtGen.emitirRO("ADD", UtGen.AC, UtGen.AC1, UtGen.AC, "op: +");
+            case or:
+                UtGen.emitirRO("ADD", UtGen.AC, UtGen.AC1, UtGen.AC, "op: or"); // Sumar valores
+                UtGen.emitirRM("JGT", UtGen.AC, 2, UtGen.PC, "Si AC>0, es verdadero");
+                UtGen.emitirRM("LDC", UtGen.AC, 0, UtGen.AC, "Caso falso (AC=0)");
+                UtGen.emitirRM("LDA", UtGen.PC, 1, UtGen.PC, "Salto incondicional");
+                UtGen.emitirRM("LDC", UtGen.AC, 1, UtGen.AC, "Caso verdadero (AC=1)");
                 break;
             case menos:
                 UtGen.emitirRO("SUB", UtGen.AC, UtGen.AC1, UtGen.AC, "op: -");
                 break;
             case por:
                 UtGen.emitirRO("MUL", UtGen.AC, UtGen.AC1, UtGen.AC, "op: *");
+            case and:
+                UtGen.emitirRO("MUL", UtGen.AC, UtGen.AC1, UtGen.AC, "op: and");
                 break;
             case entre:
                 UtGen.emitirRO("DIV", UtGen.AC, UtGen.AC1, UtGen.AC, "op: /");
+                break;
+            case modulo:
+                // Mensaje de inicio
+                UtGen.emitirComentario("Inicio de la operación de módulo");
+
+
+
+
+                 // 1. Almacenar el valor original de a en la pila temporal
+                UtGen.emitirRM("ST", UtGen.AC1, desplazamientoTmp--, UtGen.MP, "Almacenar valor original de a en la pila temporal");
+                UtGen.emitirComentario("Valor original de a almacenado en la pila temporal: " + UtGen.AC);
+
+
+                // 2. Dividir a / b para obtener el cociente
+                UtGen.emitirRO("DIV", UtGen.AC1, UtGen.AC1, UtGen.AC, "División para obtener el cociente");
+                UtGen.emitirComentario("Cociente (a / b) en AC: " + UtGen.AC);
+
+
+                                // 3. Multiplicar el cociente por b
+                UtGen.emitirRO("MUL", UtGen.AC1, UtGen.AC1, UtGen.AC, "Multiplicar cociente por divisor");
+                UtGen.emitirComentario("Resultado de (a / b) * b en AC: " + UtGen.AC);
+
+                                // 4. Recuperar el valor original de a desde la pila temporal
+                UtGen.emitirRM("LD", UtGen.AC, ++desplazamientoTmp, UtGen.MP, "Recuperar valor original de a desde la pila temporal");
+                UtGen.emitirComentario("Valor original de a recuperado en AC1: " + UtGen.AC1);
+
+                                // 5. Restar para obtener el residuo
+                UtGen.emitirRO("SUB", UtGen.AC, UtGen.AC, UtGen.AC1, "Restar para obtener el residuo");
+                UtGen.emitirComentario("Residuo (a % b) en AC: " + UtGen.AC);
+
+//
+//
+//
+//                // 1. Almacenar el valor original de a en la pila temporal
+//                UtGen.emitirRM("ST", UtGen.AC, desplazamientoTmp--, UtGen.MP, "Almacenar valor original de a en la pila temporal");
+//                UtGen.emitirComentario("Valor original de a almacenado en la pila temporal: " + UtGen.AC);
+
+//                // 3. Multiplicar el cociente por b
+//                UtGen.emitirRO("MUL", UtGen.AC, UtGen.AC1, UtGen.AC, "Multiplicar cociente por divisor");
+//                UtGen.emitirComentario("Resultado de (a / b) * b en AC: " + UtGen.AC);
+//
+//                // 4. Recuperar el valor original de a desde la pila temporal
+//                UtGen.emitirRM("LD", UtGen.AC1, ++desplazamientoTmp, UtGen.MP, "Recuperar valor original de a desde la pila temporal");
+//                UtGen.emitirComentario("Valor original de a recuperado en AC1: " + UtGen.AC1);
+//
+
+
+                // Mensaje de fin
+                UtGen.emitirComentario("Fin de la operación de módulo");
                 break;
             case menor:
                 UtGen.emitirRO("SUB", UtGen.AC, UtGen.AC1, UtGen.AC, "op: <");
@@ -289,6 +359,8 @@ public class Generador {
                 UtGen.emitirRM("LDC", UtGen.AC, 0, UtGen.AC, "caso de falso (AC=0)");
                 UtGen.emitirRM("LDA", UtGen.PC, 1, UtGen.PC, "Salto incodicional a direccion: PC+1 (es falso evito colocarlo verdadero)");
                 UtGen.emitirRM("LDC", UtGen.AC, 1, UtGen.AC, "caso de verdadero (AC=1)");
+                break;
+            case not:
                 break;
             default:
                 UtGen.emitirComentario("BUG: tipo de operacion desconocida");
