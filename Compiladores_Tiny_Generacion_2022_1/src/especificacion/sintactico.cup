@@ -93,6 +93,7 @@ non terminal NodoBase assign_stmt;
 non terminal NodoBase read_stmt;
 non terminal NodoBase write_stmt;
 non terminal NodoBase exp;
+non terminal NodoBase eq_exp;
 non terminal NodoBase simple_exp;
 non terminal NodoBase term;
 non terminal NodoBase factor;
@@ -214,13 +215,23 @@ and_exp   ::= and_exp:exI AND logic_exp:exD {:
                                 :};
 
 
-logic_exp   ::= NOT comp_exp:exI {:
+logic_exp   ::= NOT eq_exp:exI {:
     RESULT = new NodoOperacion(exI,tipoOp.not,null);
 :}
-          | comp_exp:ex	{:
+          | eq_exp:ex	{:
             RESULT = ex;
                                 :};
 
+eq_exp  ::=   comp_exp:exI EQ comp_exp:exD	{: if(debug) System.out.println("\t regla 9e");
+                                 RESULT = new NodoOperacion(exI,tipoOp.igual,exD);
+                                 :}
+             | comp_exp:exI NEQ comp_exp:exD	{: if(debug) System.out.println("\t regla 9f");
+                                     RESULT = new NodoOperacion(exI,tipoOp.noIgual,exD);
+                                     :}
+             | comp_exp:ex	{: if(debug) System.out.println("\t regla 9g");
+                                             RESULT = ex;
+                                             :}
+             		;
 
 comp_exp         ::= simple_exp:exI LT simple_exp:exD	{: if(debug) System.out.println("\t regla 9a");
 								RESULT = new NodoOperacion(exI,tipoOp.menor,exD);
@@ -233,12 +244,6 @@ comp_exp         ::= simple_exp:exI LT simple_exp:exD	{: if(debug) System.out.pr
                                 :}
         | simple_exp:exI LTE simple_exp:exD	{: if(debug) System.out.println("\t regla 9d");
                                 RESULT = new NodoOperacion(exI,tipoOp.menorIgual,exD);
-                                :}
-		| simple_exp:exI EQ simple_exp:exD	{: if(debug) System.out.println("\t regla 9e");
-                                RESULT = new NodoOperacion(exI,tipoOp.igual,exD);
-                                :}
-        | simple_exp:exI NEQ simple_exp:exD	{: if(debug) System.out.println("\t regla 9f");
-                                RESULT = new NodoOperacion(exI,tipoOp.noIgual,exD);
                                 :}
 		| simple_exp:ex	{: if(debug) System.out.println("\t regla 9g");
                                 RESULT = ex;
