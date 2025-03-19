@@ -60,6 +60,9 @@ terminal REPEAT;
 terminal UNTIL;
 terminal READ;
 terminal WRITE;
+terminal AND;
+terminal NOT;
+terminal OR;
 terminal String ID;
 terminal String NUM;
 terminal ASSIGN;
@@ -93,6 +96,10 @@ non terminal NodoBase exp;
 non terminal NodoBase simple_exp;
 non terminal NodoBase term;
 non terminal NodoBase factor;
+non terminal NodoBase and_exp;
+non terminal NodoBase logic_exp;
+non terminal NodoBase comp_exp;
+
 
 /* Precedencia de operadores */
 precedence left PLUS;
@@ -191,7 +198,31 @@ write_stmt  ::= WRITE exp:ex	{: if(debug) System.out.println("\t regla 8");
 					:}
 		;
 
-exp         ::= simple_exp:exI LT simple_exp:exD	{: if(debug) System.out.println("\t regla 9a"); 
+
+exp ::= exp:exI OR and_exp:exD {:
+        RESULT = new NodoOperacion(exI,tipoOp.or,exD);
+        :}
+        | and_exp:ex	{:
+        RESULT = ex;
+                                        :};
+
+and_exp   ::= and_exp:exI AND logic_exp:exD {:
+    RESULT = new NodoOperacion(exI,tipoOp.and,exD);
+    :}
+    | logic_exp:ex	{:
+        RESULT = ex;
+                                :};
+
+
+logic_exp   ::= NOT comp_exp:exI {:
+    RESULT = new NodoOperacion(exI,tipoOp.not,null);
+:}
+          | comp_exp:ex	{:
+            RESULT = ex;
+                                :};
+
+
+comp_exp         ::= simple_exp:exI LT simple_exp:exD	{: if(debug) System.out.println("\t regla 9a");
 								RESULT = new NodoOperacion(exI,tipoOp.menor,exD);
 								:}
 		| simple_exp:exI GT simple_exp:exD	{: if(debug) System.out.println("\t regla 9b");
@@ -224,6 +255,10 @@ simple_exp  ::= simple_exp:exI PLUS term:exD	{: if(debug) System.out.println("\t
 				RESULT=ex;
 				:}
 		;
+
+
+
+
 
 term        ::= term:exI TIMES factor:exD	{: if(debug) System.out.println("\t regla 11a"); 
                             RESULT = new NodoOperacion(exI,tipoOp.por,exD);

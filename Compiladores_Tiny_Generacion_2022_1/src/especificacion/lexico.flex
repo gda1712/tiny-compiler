@@ -86,6 +86,15 @@ bool        = true|false
 "write"         {	if(debug) System.out.println("token WRITE");
 			return sf.newSymbol("WRITE",sym.WRITE);
 			}
+"and"         {	if(debug) System.out.println("token AND");
+			return sf.newSymbol("AND",sym.AND);
+			}
+"or"         {	if(debug) System.out.println("token OR");
+			return sf.newSymbol("OR",sym.OR);
+			}
+"not"         {	if(debug) System.out.println("token NOT");
+			return sf.newSymbol("NOT",sym.NOT);
+			}
 ":="            {	if(debug) System.out.println("token ASSIGN");
 			return sf.newSymbol("ASSIGN",sym.ASSIGN);
 			}
