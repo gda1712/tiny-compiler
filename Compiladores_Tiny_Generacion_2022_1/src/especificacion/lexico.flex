@@ -140,9 +140,17 @@ bool        = true|false
 ";"             {	if(debug) System.out.println("token SEMI");
 			return sf.newSymbol("SEMI",sym.SEMI);
 			}
-{numero}        {	if(debug) System.out.println("token NUM");
-			return sf.newSymbol("NUM",sym.NUM,new String(yytext()));
-			}
+"["             { if(debug) System.out.println("token LBRACKET");
+                  return sf.newSymbol("LBRACKET", sym.LBRACKET);
+            }
+"]"             { if(debug) System.out.println("token RBRACKET");
+                  return sf.newSymbol("RBRACKET", sym.RBRACKET);
+            }
+
+{numero}        { if(debug) System.out.println("token NUM: " + yytext());
+                  return sf.newSymbol("NUM", sym.NUM, Integer.parseInt(yytext()));
+            }
+
 {bool}      {
                 if(debug) System.out.println("token BOOL");
                 return sf.newSymbol("BOOL", sym.BOOL, new String(yytext()));

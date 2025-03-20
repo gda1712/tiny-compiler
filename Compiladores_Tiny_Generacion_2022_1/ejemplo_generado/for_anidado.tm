@@ -1,4 +1,3 @@
-
 *      Compilacion TINY para el codigo objeto TM
 *      Archivo: NOMBRE_ARREGLAR
 *      Preludio estandar:
@@ -8,6 +7,7 @@
 *      -> constante
 2:       LDC       0,2(0)      cargar constante: 2
 *      <- constante
+*      Asignación normal a variable: i
 3:       ST       0,0(5)      asignacion: almaceno el valor para el id i
 *      <- asignacion
 *      for: el salto hacia el final (luego del cuerpo) del repeat debe estar aqui
@@ -26,6 +26,7 @@
 *      -> constante
 10:       LDC       0,0(0)      cargar constante: 0
 *      <- constante
+*      Asignación normal a variable: j
 11:       ST       0,1(5)      asignacion: almaceno el valor para el id j
 *      <- asignacion
 *      for: el salto hacia el final (luego del cuerpo) del repeat debe estar aqui
@@ -63,26 +64,38 @@
 *      <- constante
 25:       LD       1,0(6)      op: pop o cargo de la pila el valor izquierdo en AC1
 26:       ADD       0,1,0      op: +
+27:       ADD       0,1,0      op: or
+28:       JGT       0,2(7)      Si AC>0, es verdadero
+29:       LDC       0,0(0)      Caso falso (AC=0)
+30:       LDA       7,1(7)      Salto incondicional
+31:       LDC       0,1(0)      Caso verdadero (AC=1)
 *      <- Operacion: mas
-27:       ST       0,1(5)      asignacion: almaceno el valor para el id j
+*      Asignación normal a variable: j
+32:       ST       0,1(5)      asignacion: almaceno el valor para el id j
 *      <- asignacion
-28:       LDA       7,-17(7)      for: jmp hacia la prueba
-17:       JGT       0,11(7)      for: jmp hacia el final
+33:       LDA       7,-22(7)      for: jmp hacia la prueba
+17:       JGT       0,16(7)      for: jmp hacia el final
 *      -> asignacion
 *      -> Operacion: mas
 *      -> identificador
-29:       LD       0,0(5)      cargar valor de identificador: i
+34:       LD       0,0(5)      cargar valor de identificador: i
 *      -> identificador
-30:       ST       0,0(6)      op: push en la pila tmp el resultado expresion izquierda
+35:       ST       0,0(6)      op: push en la pila tmp el resultado expresion izquierda
 *      -> constante
-31:       LDC       0,1(0)      cargar constante: 1
+36:       LDC       0,1(0)      cargar constante: 1
 *      <- constante
-32:       LD       1,0(6)      op: pop o cargo de la pila el valor izquierdo en AC1
-33:       ADD       0,1,0      op: +
+37:       LD       1,0(6)      op: pop o cargo de la pila el valor izquierdo en AC1
+38:       ADD       0,1,0      op: +
+39:       ADD       0,1,0      op: or
+40:       JGT       0,2(7)      Si AC>0, es verdadero
+41:       LDC       0,0(0)      Caso falso (AC=0)
+42:       LDA       7,1(7)      Salto incondicional
+43:       LDC       0,1(0)      Caso verdadero (AC=1)
 *      <- Operacion: mas
-34:       ST       0,0(5)      asignacion: almaceno el valor para el id i
+*      Asignación normal a variable: i
+44:       ST       0,0(5)      asignacion: almaceno el valor para el id i
 *      <- asignacion
-35:       LDA       7,-32(7)      for: jmp hacia la prueba
-9:       JGT       0,26(7)      for: jmp hacia el final
+45:       LDA       7,-42(7)      for: jmp hacia la prueba
+9:       JGT       0,36(7)      for: jmp hacia el final
 *      Fin de la ejecucion.
-36:       HALT       0,0,0      
+46:       HALT       0,0,0

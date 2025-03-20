@@ -32,6 +32,8 @@ public class UtGen {
 
 	/* Defino al registro[1] como el acumulador 2 */
 	public static int  AC1=1;
+
+	public static int  AC2=2;
 	
 	
 	public static void emitirComentario(String c){
