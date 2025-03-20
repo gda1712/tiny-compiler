@@ -199,28 +199,21 @@ public class Generador {
         else if (nodo instanceof NodoAsignacionArray) {
             NodoAsignacionArray n = (NodoAsignacionArray) nodo;
             if (UtGen.debug) UtGen.emitirComentario("-> asignacion a array");
-
             // Generar el código para la expresión del lado derecho de la asignación
             generar(n.getExpresion());
-
             // Guardar el valor en la pila temporal
             UtGen.emitirRM("ST", UtGen.AC, desplazamientoTmp--, UtGen.MP, "Guardar valor temporal");
-
             // Obtener la dirección base del array
             int direccionBase = tablaSimbolos.getDireccion(n.getNombre());
             UtGen.emitirRM("LDC", UtGen.AC1, direccionBase, 0,
                     "Cargar dirección base del array " + n.getNombre());
-
             // Generar el índice del array
             generar(n.getIndice());
-
             // Calcular la dirección efectiva sumando el índice a la base del array
             UtGen.emitirRO("ADD", UtGen.AC, UtGen.AC1, UtGen.AC,
                     "Calcular dirección efectiva en el array " + n.getNombre());
-
             // Recuperar el valor de la pila temporal
             UtGen.emitirRM("LD", UtGen.AC1, ++desplazamientoTmp, UtGen.MP, "Recuperar valor de la pila");
-
             // Almacenar el valor en la dirección calculada
             UtGen.emitirRM("ST", UtGen.AC1, 0, UtGen.AC,
                     "Guardar valor en el array " + n.getNombre());
