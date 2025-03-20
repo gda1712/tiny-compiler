@@ -19,6 +19,29 @@ for i := 0 to 3 do
             nuevoArray[h] := temp;
         end
     end
-end
+end;
 
+write nuevoArray[0];
+write nuevoArray[1];
+write nuevoArray[2];
+write nuevoArray[3];
+write nuevoArray[4];
 
+write 100 + 90;
+write 100 - 90;
+write 100 * 90;
+write 100 % 90;
+
+write true and false;
+write true or false;
+write not true;
+write not false;
+write not true and false;
+write not true or false;
+write true and not false;
+write not true or not false;
+
+write 555;
+write not (true and false);
+write not (true or false);
+write not (true or not false);
