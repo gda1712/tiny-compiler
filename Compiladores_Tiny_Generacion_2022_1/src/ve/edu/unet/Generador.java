@@ -78,6 +78,8 @@ public class Generador {
                 generarOperacion(nodo);
             } else if (nodo instanceof NodoFor) {
 				generarFor(nodo);
+            } else if (nodo instanceof NodoComentario) {
+                generarComentario(nodo);
             } else {
                 System.out.println("BUG: Tipo de nodo a generar desconocido");
             }
@@ -87,6 +89,14 @@ public class Generador {
         } else
             System.out.println("���ERROR: por favor fije la tabla de simbolos a usar antes de generar codigo objeto!!!");
     }
+
+    private static void generarComentario(NodoBase nodo) {
+        NodoComentario n = (NodoComentario) nodo;
+        if (UtGen.debug) UtGen.emitirComentario("-> comentario");
+        UtGen.emitirComentario(n.getComentario());
+        if (UtGen.debug) UtGen.emitirComentario("<- comentario");
+    }
+
 
     private static void generarFor(NodoBase nodo){
         NodoFor n = (NodoFor) nodo;
