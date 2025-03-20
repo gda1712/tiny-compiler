@@ -81,7 +81,6 @@ terminal LPAREN;
 terminal RPAREN;
 terminal SEMI;
 terminal String BOOL;
-terminal COMENTARIO;
 
 /* Simbolos No Terminales */
 non terminal program;
@@ -154,7 +153,6 @@ stmt        ::= if_stmt:sif	{: if(debug) System.out.println("\t regla 3a");
             | for_stmt:sfor      {: if(debug) System.out.println("\t regla 4f");
                         RESULT=sfor;
                         :}
-            | COMENTARIO:com   {: RESULT=new NodoComentario(com.toString()); :}
             ;
 
 if_stmt     ::= IF exp:ex THEN stmt_seq:pthen END	{: if(debug) System.out.println("\t regla 4a"); 
