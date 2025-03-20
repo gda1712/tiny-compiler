@@ -284,7 +284,7 @@ public class Generador {
 
         // Reservamos espacio en memoria
         int direccion = tablaSimbolos.getDireccion(n.getNombre());
-        UtGen.emitirComentario("Array " + n.getNombre() + " de tamaño " + n.getTamaño() + " en " + direccion);
+        UtGen.emitirComentario("Array " + n.getNombre() + " de tamaño " + n.getSize() + " en " + direccion);
 
         if (UtGen.debug) UtGen.emitirComentario("<- Declaración de array");
     }

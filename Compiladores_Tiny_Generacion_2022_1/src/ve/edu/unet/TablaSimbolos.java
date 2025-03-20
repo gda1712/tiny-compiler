@@ -56,7 +56,7 @@ public class TablaSimbolos {
 		}
 		else if (raiz instanceof NodoArray) {
 			NodoArray nodoArray = (NodoArray) raiz;
-			InsertarSimbolo(nodoArray.getNombre(), -1);
+			InsertarSimboloArray(nodoArray.getNombre(), nodoArray.getSize(), -1);
 		}
 	    raiz = raiz.getHermanoDerecha();
 	  }

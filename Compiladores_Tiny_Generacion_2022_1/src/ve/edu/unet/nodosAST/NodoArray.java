@@ -13,7 +13,7 @@ public class NodoArray extends NodoBase {
         return nombre;
     }
 
-    public int getTamaño() {
+    public int getSize() {
         return tamaño;
     }
 }
