@@ -1,0 +1,8 @@
+nuevoArray := [5];
+
+nuevoArray[0] := 1;
+nuevoArray[1] := 2;
+nuevoArray[4] := 55;
+write nuevoArray[0];
+write nuevoArray[1];
+write nuevoArray[4];

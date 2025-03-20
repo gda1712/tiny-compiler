@@ -64,6 +64,8 @@ public class Generador {
                 generarRepeat(nodo);
             } else if (nodo instanceof NodoAsignacion) {
                 generarAsignacion(nodo);
+            } else if (nodo instanceof NodoAsignacionArray) {  // <-- ¡Nuevo caso agregado!
+                generarAsignacion(nodo);
             } else if (nodo instanceof NodoLeer) {
                 generarLeer(nodo);
             } else if (nodo instanceof NodoEscribir) {
@@ -78,6 +80,10 @@ public class Generador {
                 generarOperacion(nodo);
             } else if (nodo instanceof NodoFor) {
 				generarFor(nodo);
+            }  else if (nodo instanceof NodoArray) {
+                generarArray(nodo);
+            } else if (nodo instanceof NodoAccesoArray) {
+                generarAccesoArray(nodo);
             } else if (nodo instanceof NodoComentario) {
                 generarComentario(nodo);
             } else {
@@ -177,15 +183,46 @@ public class Generador {
     }
 
     private static void generarAsignacion(NodoBase nodo) {
-        NodoAsignacion n = (NodoAsignacion) nodo;
-        int direccion;
-        if (UtGen.debug) UtGen.emitirComentario("-> asignacion");
-        /* Genero el codigo para la expresion a la derecha de la asignacion */
-        generar(n.getExpresion());
-        /* Ahora almaceno el valor resultante */
-        direccion = tablaSimbolos.getDireccion(n.getIdentificador());
-        UtGen.emitirRM("ST", UtGen.AC, direccion, UtGen.GP, "asignacion: almaceno el valor para el id " + n.getIdentificador());
-        if (UtGen.debug) UtGen.emitirComentario("<- asignacion");
+        if (nodo instanceof NodoAsignacion) {
+            NodoAsignacion n = (NodoAsignacion) nodo;
+            if (UtGen.debug) UtGen.emitirComentario("-> asignacion");
+
+            generar(n.getExpresion());
+
+            int direccion = tablaSimbolos.getDireccion(n.getIdentificador());
+            UtGen.emitirComentario("Asignación normal a variable: " + n.getIdentificador());
+            UtGen.emitirRM("ST", UtGen.AC, direccion, UtGen.GP,
+                    "asignacion: almaceno el valor para el id " + n.getIdentificador());
+
+            if (UtGen.debug) UtGen.emitirComentario("<- asignacion");
+        }
+        else if (nodo instanceof NodoAsignacionArray) {
+            NodoAsignacionArray n = (NodoAsignacionArray) nodo;
+            if (UtGen.debug) UtGen.emitirComentario("-> asignacion a array");
+            // Generar el código para la expresión del lado derecho de la asignación
+            generar(n.getExpresion());
+            // Guardar el valor en la pila temporal
+            UtGen.emitirRM("ST", UtGen.AC, desplazamientoTmp--, UtGen.MP, "Guardar valor temporal");
+            // Obtener la dirección base del array
+            int direccionBase = tablaSimbolos.getDireccion(n.getNombre());
+            UtGen.emitirRM("LDC", UtGen.AC1, direccionBase, 0,
+                    "Cargar dirección base del array " + n.getNombre());
+            // Generar el índice del array
+            generar(n.getIndice());
+            // Calcular la dirección efectiva sumando el índice a la base del array
+            UtGen.emitirRO("ADD", UtGen.AC, UtGen.AC1, UtGen.AC,
+                    "Calcular dirección efectiva en el array " + n.getNombre());
+            // Recuperar el valor de la pila temporal
+            UtGen.emitirRM("LD", UtGen.AC1, ++desplazamientoTmp, UtGen.MP, "Recuperar valor de la pila");
+            // Almacenar el valor en la dirección calculada
+            UtGen.emitirRM("ST", UtGen.AC1, 0, UtGen.AC,
+                    "Guardar valor en el array " + n.getNombre());
+
+            if (UtGen.debug) UtGen.emitirComentario("<- asignacion a array");
+        }
+        else {
+            UtGen.emitirComentario("ERROR: Tipo de asignación no reconocido.");
+        }
     }
 
     private static void generarLeer(NodoBase nodo) {
@@ -234,6 +271,41 @@ public class Generador {
         if (UtGen.debug) UtGen.emitirComentario("-> identificador");
     }
 
+    private static void generarArray(NodoBase nodo) {
+        NodoArray n = (NodoArray) nodo;
+        if (UtGen.debug) UtGen.emitirComentario("-> Declaración de array: " + n.getNombre());
+
+        // Reservamos espacio en memoria
+        int direccion = tablaSimbolos.getDireccion(n.getNombre());
+        UtGen.emitirComentario("Array " + n.getNombre() + " de tamaño " + n.getSize() + " en " + direccion);
+
+        if (UtGen.debug) UtGen.emitirComentario("<- Declaración de array");
+    }
+
+
+    private static void generarAccesoArray(NodoBase nodo) {
+        NodoAccesoArray n = (NodoAccesoArray) nodo;
+        if (UtGen.debug) UtGen.emitirComentario("-> Acceso a array: " + n.getNombre());
+
+        // Generar código para evaluar el índice
+        generar(n.getIndice());
+
+        // Cargar la dirección base del array en AC1
+        int direccionBase = tablaSimbolos.getDireccion(n.getNombre());
+        UtGen.emitirRM("LDC", UtGen.AC1, direccionBase, 0,
+                "Cargar dirección base del array " + n.getNombre());
+
+        // Sumar el índice a la dirección base
+        UtGen.emitirRO("ADD", UtGen.AC1, UtGen.AC1, UtGen.AC,
+                "Cálculo de dirección del array " + n.getNombre());
+
+        // Cargar el valor almacenado en la dirección calculada
+        UtGen.emitirRM("LD", UtGen.AC, 0, UtGen.AC1,
+                "Carga del valor del array " + n.getNombre());
+
+        if (UtGen.debug) UtGen.emitirComentario("<- Acceso a array");
+    }
+
     private static void generarOperacion(NodoBase nodo) {
         NodoOperacion n = (NodoOperacion) nodo;
         if (UtGen.debug) UtGen.emitirComentario("-> Operacion: " + n.getOperacion());
@@ -261,6 +333,7 @@ public class Generador {
         switch (n.getOperacion()) {
             case mas:
                 UtGen.emitirRO("ADD", UtGen.AC, UtGen.AC1, UtGen.AC, "op: +");
+                break;
             case or:
                 UtGen.emitirRO("ADD", UtGen.AC, UtGen.AC1, UtGen.AC, "op: or"); // Sumar valores
                 UtGen.emitirRM("JGT", UtGen.AC, 2, UtGen.PC, "Si AC>0, es verdadero");
@@ -273,6 +346,7 @@ public class Generador {
                 break;
             case por:
                 UtGen.emitirRO("MUL", UtGen.AC, UtGen.AC1, UtGen.AC, "op: *");
+                break;
             case and:
                 UtGen.emitirRO("MUL", UtGen.AC, UtGen.AC1, UtGen.AC, "op: and");
                 break;
@@ -280,52 +354,17 @@ public class Generador {
                 UtGen.emitirRO("DIV", UtGen.AC, UtGen.AC1, UtGen.AC, "op: /");
                 break;
             case modulo:
-                // Mensaje de inicio
                 UtGen.emitirComentario("Inicio de la operación de módulo");
-
-
-
-
-                 // 1. Almacenar el valor original de a en la pila temporal
                 UtGen.emitirRM("ST", UtGen.AC1, desplazamientoTmp--, UtGen.MP, "Almacenar valor original de a en la pila temporal");
                 UtGen.emitirComentario("Valor original de a almacenado en la pila temporal: " + UtGen.AC);
-
-
-                // 2. Dividir a / b para obtener el cociente
                 UtGen.emitirRO("DIV", UtGen.AC1, UtGen.AC1, UtGen.AC, "División para obtener el cociente");
                 UtGen.emitirComentario("Cociente (a / b) en AC: " + UtGen.AC);
-
-
-                                // 3. Multiplicar el cociente por b
                 UtGen.emitirRO("MUL", UtGen.AC1, UtGen.AC1, UtGen.AC, "Multiplicar cociente por divisor");
                 UtGen.emitirComentario("Resultado de (a / b) * b en AC: " + UtGen.AC);
-
-                                // 4. Recuperar el valor original de a desde la pila temporal
                 UtGen.emitirRM("LD", UtGen.AC, ++desplazamientoTmp, UtGen.MP, "Recuperar valor original de a desde la pila temporal");
                 UtGen.emitirComentario("Valor original de a recuperado en AC1: " + UtGen.AC1);
-
-                                // 5. Restar para obtener el residuo
                 UtGen.emitirRO("SUB", UtGen.AC, UtGen.AC, UtGen.AC1, "Restar para obtener el residuo");
                 UtGen.emitirComentario("Residuo (a % b) en AC: " + UtGen.AC);
-
-//
-//
-//
-//                // 1. Almacenar el valor original de a en la pila temporal
-//                UtGen.emitirRM("ST", UtGen.AC, desplazamientoTmp--, UtGen.MP, "Almacenar valor original de a en la pila temporal");
-//                UtGen.emitirComentario("Valor original de a almacenado en la pila temporal: " + UtGen.AC);
-
-//                // 3. Multiplicar el cociente por b
-//                UtGen.emitirRO("MUL", UtGen.AC, UtGen.AC1, UtGen.AC, "Multiplicar cociente por divisor");
-//                UtGen.emitirComentario("Resultado de (a / b) * b en AC: " + UtGen.AC);
-//
-//                // 4. Recuperar el valor original de a desde la pila temporal
-//                UtGen.emitirRM("LD", UtGen.AC1, ++desplazamientoTmp, UtGen.MP, "Recuperar valor original de a desde la pila temporal");
-//                UtGen.emitirComentario("Valor original de a recuperado en AC1: " + UtGen.AC1);
-//
-
-
-                // Mensaje de fin
                 UtGen.emitirComentario("Fin de la operación de módulo");
                 break;
             case menor:

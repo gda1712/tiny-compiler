@@ -2,6 +2,7 @@ package ve.edu.unet;
 
 import java_cup.runtime.*;
 import ve.edu.unet.nodosAST.*;
+import ve.edu.unet.nodosAST.tipoOp.*;
 import java.io.InputStreamReader;
 
 
@@ -64,7 +65,7 @@ terminal AND;
 terminal NOT;
 terminal OR;
 terminal String ID;
-terminal String NUM;
+terminal Integer NUM;
 terminal ASSIGN;
 terminal EQ;
 terminal LT;
@@ -82,6 +83,8 @@ terminal RPAREN;
 terminal SEMI;
 terminal String BOOL;
 terminal COMENTARIO;
+terminal LBRACKET;
+terminal RBRACKET;
 
 /* Simbolos No Terminales */
 non terminal program;
@@ -154,6 +157,10 @@ stmt        ::= if_stmt:sif	{: if(debug) System.out.println("\t regla 3a");
             | for_stmt:sfor      {: if(debug) System.out.println("\t regla 4f");
                         RESULT=sfor;
                         :}
+            | ID:variable ASSIGN LBRACKET NUM:index RBRACKET
+                      {: if(debug) System.out.println("\t Declaración de array");
+                         RESULT = new NodoArray(variable.toString(), ((Integer)index));
+                      :}
             | COMENTARIO:com   {: RESULT=new NodoComentario(com.toString()); :}
             ;
 
@@ -175,14 +182,10 @@ repeat_stmt ::= REPEAT stmt_seq:cuerpo UNTIL exp:prueba	{: if(debug) System.out.
 							:}
 		;
 
-assign_stmt ::= ID:variable ASSIGN exp:ex	{: if(debug) System.out.println("\t regla 6 parte final");
-					if(variable!=null)
-					RESULT = new NodoAsignacion(variable.toString(),ex);
-					else{
-					RESULT = null;
-					System.out.println("Ocurrio error en cup # 0001");
-					}
-					:}
+assign_stmt ::= ID:variable ASSIGN exp:ex
+                  {: RESULT = new NodoAsignacion(variable.toString(), ex); :}
+                  | ID:variable LBRACKET exp:index RBRACKET ASSIGN exp:ex
+                  {: RESULT = new NodoAsignacionArray(variable.toString(), index, ex); :}
 		;
 
 read_stmt   ::= READ ID:variable	{: if(debug) System.out.println("\t regla 7"); 
@@ -288,7 +291,7 @@ factor      ::= LPAREN exp:ex RPAREN	{: if(debug) System.out.println("\t regla 1
 
 					System.out.println("Devolvi nodo numero entero");
 					if(valor!=null){
-						RESULT= new NodoValor(Integer.parseInt(valor));
+						RESULT= new NodoValor(valor);
 					}else{
 						RESULT = null;
 						System.out.println("Ocurrio error en cup # 0005");
@@ -309,7 +312,11 @@ factor      ::= LPAREN exp:ex RPAREN	{: if(debug) System.out.println("\t regla 1
                      // y se crea un nodo específico para booleanos
                      RESULT = new NodoValorBoolean(Boolean.parseBoolean(boolVal));
                   :}
-		| error	{: if(debug) System.out.println("\t regla 12d"); 
+		| ID:variable LBRACKET exp:index RBRACKET
+                  {: if(debug) System.out.println("\t Acceso a array");
+                     RESULT = new NodoAccesoArray(variable.toString(), index);
+                  :}
+		|error	{: if(debug) System.out.println("\t regla 12d");
 				System.out.println("Ocurrio error en cup # 0003");
 				RESULT=null;
 				:}

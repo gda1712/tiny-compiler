@@ -54,6 +54,10 @@ public class TablaSimbolos {
 			cargarTabla(((NodoFor)raiz).getExpresion());
 			cargarTabla(((NodoFor)raiz).getCuerpo());
 		}
+		else if (raiz instanceof NodoArray) {
+			NodoArray nodoArray = (NodoArray) raiz;
+			InsertarSimboloArray(nodoArray.getNombre(), nodoArray.getSize(), -1);
+		}
 	    raiz = raiz.getHermanoDerecha();
 	  }
 	}
@@ -89,6 +93,17 @@ public class TablaSimbolos {
 			throw new RuntimeException("Variable '" + Clave + "' no existe en la tabla de símbolos.");
 		}
 		return registro.getDireccionMemoria();
+	}
+
+	public boolean InsertarSimboloArray(String identificador, int tamaño, int numLinea) {
+		if(tabla.containsKey(identificador)){
+			return false;
+		} else {
+			RegistroSimbolo simbolo = new RegistroSimbolo(identificador, numLinea, direccion);
+			tabla.put(identificador, simbolo);
+			direccion += tamaño;  // Reservamos espacio en memoria para el array
+			return true;
+		}
 	}
 	
 	/*
